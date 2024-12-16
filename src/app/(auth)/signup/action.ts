@@ -65,7 +65,7 @@ export async function signUp(credentials: SignUpValues): Promise<{ error?: strin
     const session = await lucia.createSession(userId, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
-    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+    (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 
     return redirect("/");
   } catch (error) {

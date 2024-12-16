@@ -21,13 +21,13 @@ export async function login(credentials: LoginValues): Promise<{ error: string }
       },
     });
 
-    if (!existingUser || !existingUser.passwordHash) {
+    if (!existingUser || !existingUser.password) {
       return {
         error: "Incorrect username or password",
       };
     }
 
-    const validPassword = await verify(existingUser.passwordHash, password, {
+    const validPassword = await verify(existingUser.password, password, {
       memoryCost: 19456,
       timeCost: 2,
       outputLen: 32,
@@ -42,7 +42,7 @@ export async function login(credentials: LoginValues): Promise<{ error: string }
 
     const session = await lucia.createSession(existingUser.id, {});
     const sessionCookie = await lucia.createSessionCookie(session.id);
-    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+    (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 
     return redirect("/");
   } catch (error) {
